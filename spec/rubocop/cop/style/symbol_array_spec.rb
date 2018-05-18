@@ -65,10 +65,6 @@ RSpec.describe RuboCop::Cop::Style::SymbolArray, :config do
       expect_no_offenses('%i(one two three)')
     end
 
-    it 'does not register an offense for array with one element' do
-      expect_no_offenses('[:three]')
-    end
-
     it 'does not register an offense if symbol contains whitespace' do
       expect_no_offenses('[:one, :two, :"space here"]')
     end
