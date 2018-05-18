@@ -139,6 +139,11 @@ RSpec.describe RuboCop::Cop::Style::WordArray, :config do
       expect(new_source).to eq('%W(one two \n \t)')
     end
 
+    it 'auto-corrects an array of one word' do
+      new_source = autocorrect_source('[%Q(one)]')
+      expect(new_source).to eq('%W(one)')
+    end
+
     it 'keeps the line breaks in place after auto-correct' do
       new_source = autocorrect_source(["['one',",
                                        "'two', 'three']"])

@@ -36,6 +36,11 @@ RSpec.describe RuboCop::Cop::Style::SymbolArray, :config do
       expect(new_source).to eq('%i(one two three)')
     end
 
+    it 'autocorrects array of one symbol' do
+      new_source = autocorrect_source('[:one]')
+      expect(new_source).to eq('%i(one)')
+    end
+
     it 'autocorrects arrays of symbols with new line' do
       new_source = autocorrect_source("[:one,\n:two, :three,\n:four]")
       expect(new_source).to eq("%i(one\ntwo three\nfour)")
