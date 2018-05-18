@@ -82,10 +82,6 @@ RSpec.describe RuboCop::Cop::Style::WordArray, :config do
       expect_no_offenses('%w(one two three)')
     end
 
-    it 'does not register an offense for array with one element' do
-      expect_no_offenses('["three"]')
-    end
-
     it 'does not register an offense for array with empty strings' do
       expect_no_offenses('["", "two", "three"]')
     end
@@ -137,6 +133,11 @@ RSpec.describe RuboCop::Cop::Style::WordArray, :config do
     it 'auto-corrects an array of words and character constants' do
       new_source = autocorrect_source('[%|one|, %Q(two), ?\n, ?\t]')
       expect(new_source).to eq('%W(one two \n \t)')
+    end
+
+    it 'auto-corrects an array of one word' do
+      new_source = autocorrect_source('[%Q(one)]')
+      expect(new_source).to eq('%w(one)')
     end
 
     it 'keeps the line breaks in place after auto-correct' do
