@@ -127,7 +127,7 @@ RSpec.describe RuboCop::Cop::Style::FormatStringToken, :config do
     RUBY
   end
 
-  it 'ignores placeholder argumetns' do
+  it 'ignores placeholder arguments' do
     expect_no_offenses(<<-RUBY.strip_indent)
       format(
         '%<day>s %<start>s-%<end>s',
