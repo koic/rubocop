@@ -163,6 +163,125 @@ RSpec.describe RuboCop::Cop::Style::EndlessMethod, :config do
       end
     end
 
+    context 'EnforcedStyle: require_single_line' do
+      let(:cop_config) { { 'EnforcedStyle' => 'require_single_line' } }
+
+      it 'does not register an offense for a single line endless method' do
+        expect_no_offenses(<<~RUBY)
+          def my_method() = x
+        RUBY
+      end
+
+      it 'does not register an offense for a single line endless method with arguments' do
+        expect_no_offenses(<<~RUBY)
+          def my_method(a, b) = x
+        RUBY
+      end
+
+      it 'registers an offense and corrects for a multiline endless method' do
+        expect_offense(<<~RUBY)
+          def my_method() = x.foo
+          ^^^^^^^^^^^^^^^^^^^^^^^ Avoid endless method definitions with multiple lines.
+                             .bar
+                             .baz
+        RUBY
+
+        expect_correction(<<~RUBY)
+          def my_method
+            x.foo
+                             .bar
+                             .baz
+          end
+        RUBY
+      end
+
+      it 'does not register an offense for no statements method' do
+        expect_no_offenses(<<~RUBY)
+          def my_method
+          end
+        RUBY
+      end
+
+      it 'does not register an offense for multiple statements method' do
+        expect_no_offenses(<<~RUBY)
+          def my_method
+            x.foo
+            x.bar
+          end
+        RUBY
+      end
+
+      it 'does not register an offenses for multiple statements method with `begin`' do
+        expect_no_offenses(<<~RUBY)
+          def my_method
+            begin
+              foo && bar
+            end
+          end
+        RUBY
+      end
+
+      it 'registers an offense and corrects for a single line method' do
+        expect_offense(<<~RUBY)
+          def my_method
+          ^^^^^^^^^^^^^ Use endless method definitions for single line methods.
+            x
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          def my_method = x
+        RUBY
+      end
+
+      it 'registers an offense and corrects for a single line method with arguments' do
+        expect_offense(<<~RUBY)
+          def my_method(a, b)
+          ^^^^^^^^^^^^^^^^^^^ Use endless method definitions for single line methods.
+            x
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          def my_method(a, b) = x
+        RUBY
+      end
+
+      it 'registers an offense and corrects for a multiline endless method' do
+        expect_offense(<<~RUBY)
+          def my_method() = x.foo
+          ^^^^^^^^^^^^^^^^^^^^^^^ Avoid endless method definitions with multiple lines.
+                             .bar
+                             .baz
+        RUBY
+
+        expect_correction(<<~RUBY)
+          def my_method
+            x.foo
+                             .bar
+                             .baz
+          end
+        RUBY
+      end
+
+      it 'registers an offense and corrects for a multiline endless method with arguments' do
+        expect_offense(<<~RUBY)
+          def my_method(a, b) = x.foo
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^ Avoid endless method definitions with multiple lines.
+                                 .bar
+                                 .baz
+        RUBY
+
+        expect_correction(<<~RUBY)
+          def my_method(a, b)
+            x.foo
+                                 .bar
+                                 .baz
+          end
+        RUBY
+      end
+    end
+
     context 'EnforcedStyle: require_always' do
       let(:cop_config) { { 'EnforcedStyle' => 'require_always' } }
 
