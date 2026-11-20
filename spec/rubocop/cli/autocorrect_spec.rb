@@ -2007,6 +2007,36 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     RUBY
   end
 
+  it 'corrects `Layout/HeredocArgumentClosingParenthesis` with `Style/TrailingCommaInHashLiteral`' do
+    create_file('.rubocop.yml', <<~YAML)
+      Layout/HeredocArgumentClosingParenthesis:
+        Enabled: true
+      Style/TrailingCommaInHashLiteral:
+        EnforcedStyleForMultiline: comma
+    YAML
+    create_file('example.rb', <<~RUBY)
+      {
+        key: do_something(
+          foo(<<~TEXT)
+            text
+          TEXT
+        )
+      }
+    RUBY
+
+    cops = 'Layout/HeredocArgumentClosingParenthesis,Style/TrailingCommaInHashLiteral'
+
+    expect(cli.run(['-A', '--only', cops])).to eq(0)
+    expect(File.read('example.rb')).to eq(<<~RUBY)
+      {
+        key: do_something(
+          foo(<<~TEXT)),
+            text
+          TEXT
+      }
+    RUBY
+  end
+
   it 'corrects `Style/RedundantInterpolation` with `Style/MethodCallWithArgsParentheses`' do
     create_file('.rubocop.yml', <<~YAML)
       Style/MethodCallWithArgsParentheses:

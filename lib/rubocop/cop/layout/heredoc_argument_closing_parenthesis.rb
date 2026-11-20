@@ -60,9 +60,17 @@ module RuboCop
 
         # `Layout/MultilineMethodCallBraceLayout` can move the same closing parenthesis after
         # the last argument in the same pass, and both insertions are kept. `Style/RaiseArgs`
-        # removes the parentheses of `raise Error.new(<<~MSG ...)` around the moved one.
+        # removes the parentheses of `raise Error.new(<<~MSG ...)` around the moved one. The
+        # trailing comma cops insert a comma after the closing parenthesis, which would be left
+        # after the heredoc terminator when the parenthesis is moved.
         def self.autocorrect_incompatible_with
-          [Layout::MultilineMethodCallBraceLayout, Style::RaiseArgs, Style::TrailingCommaInArguments]
+          [
+            Layout::MultilineMethodCallBraceLayout,
+            Style::RaiseArgs,
+            Style::TrailingCommaInArguments,
+            Style::TrailingCommaInArrayLiteral,
+            Style::TrailingCommaInHashLiteral
+          ]
         end
 
         # rubocop:disable-next Metrics/CyclomaticComplexity
