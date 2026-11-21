@@ -135,11 +135,11 @@ module RuboCop
         def for_assignment_node
           return unless (parent_node = node.parent)
           return parent_node if parent_node.for_type?
+          return unless parent_node.mlhs_type?
 
-          grandparent_node = parent_node.parent
-          return grandparent_node if parent_node.mlhs_type? && grandparent_node&.for_type?
+          ancestor = parent_node.each_ancestor.find { |ancestor_node| !ancestor_node.mlhs_type? }
 
-          nil
+          ancestor if ancestor&.for_type?
         end
 
         def find_multiple_assignment_node(grandparent_node)

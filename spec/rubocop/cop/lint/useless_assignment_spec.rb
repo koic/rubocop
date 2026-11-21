@@ -367,6 +367,23 @@ RSpec.describe RuboCop::Cop::Lint::UselessAssignment, :config do
     end
   end
 
+  context 'when a variable is assigned and unreferenced in `for` with nested multiple variables' do
+    it 'registers an offense' do
+      expect_offense(<<~RUBY)
+        for i, (j, k) in items
+                   ^ Useless assignment to variable - `k`.
+          do_something(i, j)
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        for i, (j, _) in items
+          do_something(i, j)
+        end
+      RUBY
+    end
+  end
+
   context 'when a variable is assigned and referenced in `for`' do
     it 'does not register an offense' do
       expect_no_offenses(<<~RUBY)
