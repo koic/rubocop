@@ -1,0 +1,1 @@
+* [#16541](https://github.com/rubocop/rubocop/pull/16541): Fix an incorrect autocorrect for `Layout/HeredocArgumentClosingParenthesis` with a trailing comma before the closing parenthesis. ([@koic][])

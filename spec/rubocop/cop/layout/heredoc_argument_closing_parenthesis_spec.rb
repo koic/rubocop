@@ -100,6 +100,17 @@ RSpec.describe RuboCop::Cop::Layout::HeredocArgumentClosingParenthesis, :config 
         RUBY
       end
 
+      it 'accepts a trailing comma after the closing parenthesis of the last heredoc argument call' do
+        expect_no_offenses(<<~RUBY)
+          foo#{dot}bar(<<~FOO,
+            foo
+          FOO
+          baz(<<~BAZ),)
+            baz
+          BAZ
+        RUBY
+      end
+
       it 'accepts when there is an argument between a heredoc argument and the closing parentheses' do
         expect_no_offenses(<<~RUBY)
           foo#{dot}bar(<<~TEXT,

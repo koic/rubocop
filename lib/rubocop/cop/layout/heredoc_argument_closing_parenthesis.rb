@@ -195,8 +195,11 @@ module RuboCop
 
           end_of_outer_send = outermost_send.loc.end
 
-          same_line?(end_of_outer_send, end_of_last_arg_of_outer_send) &&
-            end_of_outer_send.column == end_of_last_arg_of_outer_send.column + 1
+          return false unless same_line?(end_of_outer_send, end_of_last_arg_of_outer_send)
+
+          between = end_of_last_arg_of_outer_send.end.join(end_of_outer_send.begin)
+
+          between.source.match?(/\A,?\z/)
         end
 
         def fix_closing_parenthesis(node, corrector)
